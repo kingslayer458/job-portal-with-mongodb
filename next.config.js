@@ -1,8 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
-  experimental: {
-    outputFileTracingRoot: undefined,
+  distDir: 'dist',
+  images: {
+    unoptimized: true,
   },
   eslint: {
     ignoreDuringBuilds: true,

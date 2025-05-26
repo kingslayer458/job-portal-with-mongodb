@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Listing Portal</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="min-h-screen bg-gray-50">
+    <!-- Header -->
+    <header class="bg-gray-50 py-6">
+      <div class="container mx-auto px-6">
+        <div class="bg-white rounded-full shadow-sm py-3 px-5">
+          <div class="flex items-center justify-center">
+            <img
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/cmwlogo%20%281%29%201-ov3NmFCQfnYQVOxQS6YKVHab02dSoX.png"
+              alt="Logo"
+              class="w-10 h-10 object-contain"
+            />
+            <a href="#" class="text-gray-700 hover:text-gray-900 font-medium">
+              Home
+            </a>
+            <a href="#" class="text-gray-700 hover:text-gray-900 font-medium ml-8">
+              Find Jobs
+            </a>
+            <a href="#" class="text-gray-700 hover:text-gray-900 font-medium ml-8">
+              Find Talents
+            </a>
+            <a href="#" class="text-gray-700 hover:text-gray-900 font-medium ml-8">
+              About us
+            </a>
+            <a href="#" class="text-gray-700 hover:text-gray-900 font-medium ml-8">
+              Testimonials
+            </a>
+            <button
+              class="bg-purple-600 hover:bg-purple-700 text-white rounded-full px-6 py-2 ml-4"
+              id="createJobBtn"
+            >
+              Create Jobs
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Search and Filters -->
+    <div class="bg-gray-50 pb-6">
+      <div class="container mx-auto px-6">
+        <div class="flex flex-col md:flex-row gap-4">
+          <div class="relative md:w-1/4">
+            <div class="relative">
+              <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input
+                placeholder="Search By Job Title, Role"
+                class="pl-10 pr-4 py-2 border border-gray-200 rounded-md h-12 w-full"
+              />
+            </div>
+          </div>
+
+          <div class="relative md:w-1/4">
+            <div class="border border-gray-200 rounded-md h-12 flex items-center px-3 cursor-pointer location-select">
+              <svg class="h-5 w-5 mr-2 text-gray-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+              <span class="text-gray-500">Preferred Location</span>
+              <svg class="h-4 w-4 ml-auto text-gray-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+              <div class="location-dropdown hidden absolute top-full left-0 w-full bg-white border border-gray-200 rounded-md mt-1 z-10">
+                <div class="p-2 hover:bg-gray-100 cursor-pointer">Onsite</div>
+                <div class="p-2 hover:bg-gray-100 cursor-pointer">Remote</div>
+                <div class="p-2 hover:bg-gray-100 cursor-pointer">Hybrid</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="relative md:w-1/4">
+            <div class="border border-gray-200 rounded-md h-12 flex items-center px-3 cursor-pointer job-type-select">
+              <img src="images/user-icon.png" alt="User icon" class="h-5 w-5 mr-2 text-gray-400" />
+              <span class="text-gray-500">Job type</span>
+              <svg class="h-4 w-4 ml-auto text-gray-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+              <div class="job-type-dropdown hidden absolute top-full left-0 w-full bg-white border border-gray-200 rounded-md mt-1 z-10">
+                <div class="p-2 hover:bg-gray-100 cursor-pointer">Full Time</div>
+                <div class="p-2 hover:bg-gray-100 cursor-pointer">Part Time</div>
+                <div class="p-2 hover:bg-gray-100 cursor-pointer">Contract</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="md:w-1/4 space-y-2">
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-600">Salary Per Month</span>
+              <span class="font-medium" id="salaryRangeText">
+                ₹50k - ₹80k
+              </span>
+            </div>
+            <div class="px-1 py-2">
+              <div class="relative h-6 w-full" id="rangeSlider">
+                <!-- Track -->
+                <div class="absolute top-1/2 transform -translate-y-1/2 w-full h-[1px]">
+                  <img src="images/slider-track.png" alt="Slider track" class="w-full h-full object-cover" />
+                </div>
+
+                <!-- Min Thumb -->
+                <div
+                  class="absolute top-1/2 transform -translate-y-1/2 w-4 h-4 cursor-pointer"
+                  style="left: calc(40% - 8px);"
+                  id="minThumb"
+                >
+                  <img src="images/slider-thumb.png" alt="Min thumb" class="w-full h-full" />
+                </div>
+
+                <!-- Max Thumb -->
+                <div
+                  class="absolute top-1/2 transform -translate-y-1/2 w-4 h-4 cursor-pointer"
+                  style="left: calc(70% - 8px);"
+                  id="maxThumb"
+                >
+                  <img src="images/slider-thumb.png" alt="Max thumb" class="w-full h-full" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Job Listings Grid -->
+    <div class="container mx-auto px-6 py-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="jobListingsContainer">
+        <!-- Job listings will be inserted here by JavaScript -->
+      </div>
+    </div>
+
+    <!-- Create Job Modal -->
+    <div class="modal-overlay hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" id="createJobModal">
+      <div class="bg-white rounded-lg max-w-[600px] w-full mx-4">
+        <div class="p-6">
+          <div class="text-center mb-6">
+            <h2 class="text-xl font-semibold">Create Job Opening</h2>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+            <div class="space-y-2">
+              <label for="jobTitle" class="block text-sm font-medium text-gray-700">Job Title</label>
+              <input id="jobTitle" placeholder="Full Stack Developer" class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+            </div>
+            <div class="space-y-2">
+              <label for="companyName" class="block text-sm font-medium text-gray-700">Company Name</label>
+              <input id="companyName" placeholder="Amazon, Microsoft, Swiggy" class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+            </div>
+            <div class="space-y-2">
+              <label for="location" class="block text-sm font-medium text-gray-700">Location</label>
+              <input id="location" placeholder="Enter job location" class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+            </div>
+            <div class="space-y-2">
+              <label for="jobType" class="block text-sm font-medium text-gray-700">Job Type</label>
+              <div class="relative">
+                <select id="jobType" class="w-full px-3 py-2 border border-gray-300 rounded-md appearance-none">
+                  <option value="fulltime">Full-time</option>
+                  <option value="parttime">Part-time</option>
+                  <option value="contract">Contract</option>
+                  <option value="internship">Internship</option>
+                </select>
+                <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+            </div>
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">Salary Range</label>
+              <div class="flex items-center gap-2">
+                <div class="relative">
+                  <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">₹</span>
+                  <input class="pl-7 w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="10,00,000" />
+                </div>
+                <span>to</span>
+                <div class="relative">
+                  <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">₹</span>
+                  <input class="pl-7 w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="12,00,000" />
+                </div>
+              </div>
+            </div>
+            <div class="space-y-2">
+              <label for="deadline" class="block text-sm font-medium text-gray-700">Application Deadline</label>
+              <div class="relative">
+                <input id="deadline" type="date" class="w-full px-3 py-2 border border-gray-300 rounded-md pr-10" />
+                <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+              </div>
+            </div>
+            <div class="space-y-2 col-span-2">
+              <label for="description" class="block text-sm font-medium text-gray-700">Job Description</label>
+              <textarea
+                id="description"
+                placeholder="Please share a description to let the candidate know more about the job role"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md min-h-[100px]"
+              ></textarea>
+            </div>
+          </div>
+          <div class="flex justify-between mt-4">
+            <button class="border border-gray-300 bg-white hover:bg-gray-50 px-4 py-2 rounded-md flex items-center gap-2" id="saveDraftBtn">
+              <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                <polyline points="7 3 7 8 15 8"></polyline>
+              </svg>
+              Save Draft
+            </button>
+            <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center gap-2" id="publishBtn">
+              <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+              Publish
+            </button>
+          </div>
+          <button class="absolute top-4 right-4 text-gray-500 hover:text-gray-700" id="closeModalBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
