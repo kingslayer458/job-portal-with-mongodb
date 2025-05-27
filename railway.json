@@ -1,8 +1,14 @@
 {
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
-    "builder": "NIXPACKS",
-    "buildCommand": "npm run build"
+    "builder": "DOCKER",
+    "docker": {
+      "context": ".",
+      "dockerfile": "Dockerfile",
+      "buildArgs": {
+        "NODE_VERSION": "20-alpine"
+      }
+    }
   },
   "deploy": {
     "startCommand": "npm start",
