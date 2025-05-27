@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState, useRef, useEffect } from "react"
-import { Search, MapPin, Calendar, Save, Send } from "lucide-react"
+import { Search, MapPin, Calendar, Save, Send, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -11,111 +11,15 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import Image from "next/image"
+import { useToast } from "@/components/ui/use-toast"
 
-const jobListings = [
+// This will be replaced with data from MongoDB
+const fallbackJobListings = [
   {
-    id: 1,
+    _id: "1",
     company: "Amazon",
     logo: "/images/amazon-logo.png",
     position: "Full Stack Developer",
-    experience: "1-3 yr Exp",
-    location: "Onsite",
-    salary: "12LPA",
-    timeAgo: "24h Ago",
-    description: [
-      "A user-friendly interface lets you browse stunning photos and videos",
-      "Filter destinations based on interests and travel style, and create personalized",
-    ],
-  },
-  {
-    id: 2,
-    company: "Tesla",
-    logo: "/images/tesla-logo.png",
-    position: "Node Js Developer",
-    experience: "1-3 yr Exp",
-    location: "Onsite",
-    salary: "12LPA",
-    timeAgo: "24h Ago",
-    description: [
-      "A user-friendly interface lets you browse stunning photos and videos",
-      "Filter destinations based on interests and travel style, and create personalized",
-    ],
-  },
-  {
-    id: 3,
-    company: "Swiggy",
-    logo: "/images/swiggy-logo.png",
-    position: "UX/UI Designer",
-    experience: "1-3 yr Exp",
-    location: "Onsite",
-    salary: "12LPA",
-    timeAgo: "24h Ago",
-    description: [
-      "A user-friendly interface lets you browse stunning photos and videos",
-      "Filter destinations based on interests and travel style, and create personalized",
-    ],
-  },
-  {
-    id: 4,
-    company: "Amazon",
-    logo: "/images/amazon-logo.png",
-    position: "Full Stack Developer",
-    experience: "1-3 yr Exp",
-    location: "Onsite",
-    salary: "12LPA",
-    timeAgo: "24h Ago",
-    description: [
-      "A user-friendly interface lets you browse stunning photos and videos",
-      "Filter destinations based on interests and travel style, and create personalized",
-    ],
-  },
-  {
-    id: 5,
-    company: "Tesla",
-    logo: "/images/tesla-logo.png",
-    position: "Node Js Developer",
-    experience: "1-3 yr Exp",
-    location: "Onsite",
-    salary: "12LPA",
-    timeAgo: "24h Ago",
-    description: [
-      "A user-friendly interface lets you browse stunning photos and videos",
-      "Filter destinations based on interests and travel style, and create personalized",
-    ],
-  },
-  {
-    id: 6,
-    company: "Swiggy",
-    logo: "/images/swiggy-logo.png",
-    position: "UX/UI Designer",
-    experience: "1-3 yr Exp",
-    location: "Onsite",
-    salary: "12LPA",
-    timeAgo: "24h Ago",
-    description: [
-      "A user-friendly interface lets you browse stunning photos and videos",
-      "Filter destinations based on interests and travel style, and create personalized",
-    ],
-  },
-  {
-    id: 7,
-    company: "Amazon",
-    logo: "/images/amazon-logo.png",
-    position: "Full Stack Developer",
-    experience: "1-3 yr Exp",
-    location: "Onsite",
-    salary: "12LPA",
-    timeAgo: "24h Ago",
-    description: [
-      "A user-friendly interface lets you browse stunning photos and videos",
-      "Filter destinations based on interests and travel style, and create personalized",
-    ],
-  },
-  {
-    id: 8,
-    company: "Tesla",
-    logo: "/images/tesla-logo.png",
-    position: "Node Js Developer",
     experience: "1-3 yr Exp",
     location: "Onsite",
     salary: "12LPA",
@@ -142,7 +46,7 @@ const RangeSlider = ({
   const [minVal, setMinVal] = useState(value[0])
   const [maxVal, setMaxVal] = useState(value[1])
   const trackRef = useRef<HTMLDivElement>(null)
-  const [isDragging, setIsDragging] = useState<"min" | "max" | null>(null)
+  const [draggedThumb, setIsDragging] = useState<"min" | "max" | null>(null)
 
   // Convert to percentage
   const getPercent = (value: number) => ((value - min) / (max - min)) * 100
@@ -161,7 +65,7 @@ const RangeSlider = ({
 
   // Handle mouse move for dragging
   useEffect(() => {
-    if (!isDragging) return
+    if (!draggedThumb) return
 
     const handleMouseMove = (e: MouseEvent) => {
       if (!trackRef.current) return
@@ -171,10 +75,10 @@ const RangeSlider = ({
       const percent = Math.min(Math.max(0, offsetX / rect.width), 1)
       const newValue = Math.round(percent * (max - min) + min)
 
-      if (isDragging === "min" && newValue < maxVal) {
+      if (draggedThumb === "min" && newValue < maxVal) {
         setMinVal(newValue)
         onChange([newValue, maxVal])
-      } else if (isDragging === "max" && newValue > minVal) {
+      } else if (draggedThumb === "max" && newValue > minVal) {
         setMaxVal(newValue)
         onChange([minVal, newValue])
       }
@@ -191,10 +95,10 @@ const RangeSlider = ({
       document.removeEventListener("mousemove", handleMouseMove)
       document.removeEventListener("mouseup", handleMouseUp)
     }
-  }, [isDragging, min, max, minVal, maxVal, onChange])
+  }, [draggedThumb, min, max, minVal, maxVal, onChange])
 
   return (
-    <div className="relative h-6 w-full">
+    <div className="relative h-5 w-full">
       {/* Track */}
       <div ref={trackRef} className="absolute top-1/2 transform -translate-y-1/2 w-full h-[1px]">
         <img src="/images/slider-track.png" alt="Slider track" className="w-full h-full object-cover" />
@@ -202,8 +106,8 @@ const RangeSlider = ({
 
       {/* Min Thumb */}
       <div
-        className="absolute top-1/2 transform -translate-y-1/2 w-4 h-4 cursor-pointer"
-        style={{ left: `calc(${getPercent(minVal)}% - 8px)` }}
+        className="absolute top-1/2 transform -translate-y-1/2 w-3.5 h-3.5 cursor-pointer"
+        style={{ left: `calc(${getPercent(minVal)}% - 7px)` }}
         onMouseDown={(e) => handleMouseDown(e, "min")}
       >
         <img src="/images/slider-thumb.png" alt="Min thumb" className="w-full h-full" />
@@ -211,8 +115,8 @@ const RangeSlider = ({
 
       {/* Max Thumb */}
       <div
-        className="absolute top-1/2 transform -translate-y-1/2 w-4 h-4 cursor-pointer"
-        style={{ left: `calc(${getPercent(maxVal)}% - 8px)` }}
+        className="absolute top-1/2 transform -translate-y-1/2 w-3.5 h-3.5 cursor-pointer"
+        style={{ left: `calc(${getPercent(maxVal)}% - 7px)` }}
         onMouseDown={(e) => handleMouseDown(e, "max")}
       >
         <img src="/images/slider-thumb.png" alt="Max thumb" className="w-full h-full" />
@@ -224,6 +128,183 @@ const RangeSlider = ({
 export default function JobListingPage() {
   const [salaryRange, setSalaryRange] = useState<[number, number]>([50, 80])
   const [createJobOpen, setCreateJobOpen] = useState(false)
+  const [selectedJob, setSelectedJob] = useState<JobListing | null>(null)
+  interface JobListing {
+    _id: string;
+    company: string;
+    logo: string;
+    position: string;
+    experience: string;
+    location: string;
+    salary: string;
+    timeAgo: string;
+    jobType?: string;
+    description: string[];
+  }
+  
+  const [jobListings, setJobListings] = useState<JobListing[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const { toast } = useToast()
+
+  // Form state
+  const [formData, setFormData] = useState({
+    company: "",
+    position: "",
+    location: "",
+    jobType: "fulltime",
+    experience: "1-3 yr Exp",
+    salaryMin: "30000",
+    salaryMax: "80000",
+    deadline: "",
+    description: "",
+  })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // Fetch job listings from API
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch('/api/jobs')
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch jobs')
+        }
+
+        const data = await response.json()
+        setJobListings(data)
+        setError(null)
+      } catch (err) {
+        console.error('Error fetching jobs:', err)
+        setError('Failed to load job listings. Using fallback data.')
+        setJobListings(fallbackJobListings)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchJobs()
+  }, [])
+
+  // Handle form input changes
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target
+    
+    // Update form data directly - no longer need to sync with range slider
+    setFormData(prev => ({
+      ...prev,
+      [id]: value
+    }))
+  }
+
+  // Handle select changes
+  const handleSelectChange = (value: string, fieldName: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [fieldName]: value
+    }))
+  }
+
+  // Handle salary range slider change
+  const handleSalaryRangeChange = (values: [number, number]) => {
+    setFormData(prev => ({
+      ...prev,
+      salaryRangeValues: values,
+      salaryMin: String(values[0] * 100000),
+      salaryMax: String(values[1] * 100000)
+    }))
+  }
+
+  // Format currency for display
+  const formatCurrency = (amount: string) => {
+    const value = parseInt(amount);
+    if (isNaN(value)) return "";
+    
+    // Convert to lakhs and format with commas
+    if (value >= 100000) {
+      const lakhs = value / 100000;
+      return lakhs % 1 === 0 ? 
+        `₹${lakhs} LPA` : 
+        `₹${lakhs.toFixed(1)} LPA`;
+    }
+    
+    // Format with commas for Indian numbering system
+    return `₹${value.toLocaleString('en-IN')}`;
+  }
+
+  // Handle form submission
+  const handleSubmit = async () => {
+    try {
+      setIsSubmitting(true)
+      
+      // Format the salary for display
+      const salaryDisplay = formData.salaryMin ? 
+        `${formatCurrency(formData.salaryMin)}-${formatCurrency(formData.salaryMax)}` : 
+        "Competitive"
+      
+      const jobData = {
+        company: formData.company,
+        logo: "/images/default-logo.png", // Default logo or you could add logo upload functionality
+        position: formData.position,
+        experience: formData.experience,
+        location: formData.location,
+        jobType: formData.jobType,
+        salary: salaryDisplay,
+        salaryRange: {
+          min: parseInt(formData.salaryMin) || 0,
+          max: parseInt(formData.salaryMax) || 0
+        },
+        description: formData.description,
+        deadline: formData.deadline
+      }
+
+      const response = await fetch('/api/jobs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(jobData),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to create job')
+      }
+
+      const newJob = await response.json()
+
+      // Update the job listings with the new job
+      setJobListings(prev => [newJob, ...prev])
+
+      // Reset form and close dialog
+      setFormData({
+        company: "",
+        position: "",
+        location: "",
+        jobType: "fulltime",
+        experience: "1-3 yr Exp",
+        salaryMin: "50000",
+        salaryMax: "100000",
+        deadline: "",
+        description: "",
+      })
+      setCreateJobOpen(false)
+
+      toast({
+        title: "Success!",
+        description: "Job posting created successfully"
+      })
+    } catch (err) {
+      console.error('Error creating job:', err)
+      toast({
+        title: "Error",
+        description: "Failed to create job posting. Please try again.",
+        variant: "destructive"
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -309,15 +390,15 @@ export default function JobListingPage() {
               </Select>
             </div>
 
-            <div className="md:w-1/4 space-y-2">
-              <div className="flex justify-between text-sm">
+            <div className="md:w-1/4 space-y-1">
+              <div className="flex justify-between text-xs">
                 <span className="text-gray-600">Salary Per Month</span>
                 <span className="font-medium">
                   ₹{salaryRange[0]}k - ₹{salaryRange[1]}k
                 </span>
               </div>
-              <div className="px-1 py-2">
-                <RangeSlider min={10} max={100} value={salaryRange} onChange={setSalaryRange} />
+              <div className="px-1 w-4/5 mx-auto">
+                <RangeSlider min={50} max={150} value={salaryRange} onChange={setSalaryRange} />
               </div>
             </div>
           </div>
@@ -328,7 +409,7 @@ export default function JobListingPage() {
       <div className="container mx-auto px-6 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {jobListings.map((job) => (
-            <div key={job.id} className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+            <div key={job._id} className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
               <div className="flex items-start justify-between mb-4">
                 <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center">
                   <Image
@@ -411,7 +492,7 @@ export default function JobListingPage() {
               </div>
 
               <ul className="text-sm text-gray-600 mb-4 space-y-1">
-                {job.description.map((desc, index) => (
+                {job.description.map((desc: string, index: number) => (
                   <li key={index} className="flex items-start">
                     <span className="mr-2">•</span>
                     <span className="leading-tight">{desc}</span>
@@ -432,20 +513,38 @@ export default function JobListingPage() {
           </DialogHeader>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="jobTitle">Job Title</Label>
-              <Input id="jobTitle" placeholder="Full Stack Developer" />
+              <Label htmlFor="position">Job Title</Label>
+              <Input 
+                id="position" 
+                placeholder="Full Stack Developer" 
+                value={formData.position}
+                onChange={handleInputChange}
+              />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="companyName">Company Name</Label>
-              <Input id="companyName" placeholder="Amazon, Microsoft, Swiggy" />
+              <Label htmlFor="company">Company Name</Label>
+              <Input 
+                id="company" 
+                placeholder="Amazon, Microsoft, Swiggy" 
+                value={formData.company}
+                onChange={handleInputChange}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="location">Location</Label>
-              <Input id="location" placeholder="Enter job location" />
+              <Input 
+                id="location" 
+                placeholder="Enter job location" 
+                value={formData.location}
+                onChange={handleInputChange}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="jobType">Job Type</Label>
-              <Select defaultValue="fulltime">
+              <Select 
+                value={formData.jobType} 
+                onValueChange={(value) => handleSelectChange(value, 'jobType')}
+              >
                 <SelectTrigger id="jobType">
                   <SelectValue placeholder="Select Job Type" />
                 </SelectTrigger>
@@ -457,24 +556,42 @@ export default function JobListingPage() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-4">
               <Label>Salary Range</Label>
               <div className="flex items-center gap-2">
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">₹</span>
-                  <Input className="pl-7" placeholder="10,00,000" />
+                  <Input 
+                    id="salaryMin"
+                    className="pl-7" 
+                    placeholder="10,00,000" 
+                    value={formData.salaryMin}
+                    onChange={handleInputChange}
+                  />
                 </div>
                 <span>to</span>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">₹</span>
-                  <Input className="pl-7" placeholder="12,00,000" />
+                  <Input 
+                    id="salaryMax"
+                    className="pl-7" 
+                    placeholder="12,00,000" 
+                    value={formData.salaryMax}
+                    onChange={handleInputChange}
+                  />
                 </div>
               </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="deadline">Application Deadline</Label>
               <div className="relative">
-                <Input id="deadline" type="date" className="pr-10" />
+                <Input 
+                id="deadline" 
+                type="date" 
+                className="pr-10" 
+                value={formData.deadline}
+                onChange={handleInputChange}
+              />
                 <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               </div>
             </div>
@@ -484,6 +601,8 @@ export default function JobListingPage() {
                 id="description"
                 placeholder="Please share a description to let the candidate know more about the job role"
                 className="min-h-[100px]"
+                value={formData.description}
+                onChange={handleInputChange}
               />
             </div>
           </div>
@@ -492,9 +611,22 @@ export default function JobListingPage() {
               <Save className="h-4 w-4" />
               Save Draft
             </Button>
-            <Button className="bg-blue-500 hover:bg-blue-600 flex items-center gap-2">
-              <Send className="h-4 w-4" />
-              Publish
+            <Button 
+              className="bg-blue-500 hover:bg-blue-600 flex items-center gap-2"
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  Publishing...
+                </>
+              ) : (
+                <>
+                  <Send className="h-4 w-4" />
+                  Publish
+                </>
+              )}
             </Button>
           </div>
         </DialogContent>
