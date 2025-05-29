@@ -3,6 +3,7 @@
 A modern job portal application built with Next.js and MongoDB, featuring a clean and intuitive user interface for job seekers and employers.
 ##
 🚀 **Live Demo(fronntend+backend):** [job portal ui](https://jobportalyo.netlify.app/)
+##
 🚀 **Live Demo(frontend):** [job portal ui](https://job-portal-ui12.vercel.app/)
 
 ![job portal ui Preview](net1.png)
