@@ -57,7 +57,7 @@ MONGODB_URI=your_mongodb_connection_string
 npm run dev
 ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser
 
 ## Deployment
 
