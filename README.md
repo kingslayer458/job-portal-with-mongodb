@@ -100,8 +100,3 @@ job-portal-ui/
 
 This project is licensed under the MIT License - see the LICENSE file for details
 
-## Acknowledgments
-
-- Next.js team for the amazing framework
-- MongoDB for the database solution
-- Railway for the deployment platform
